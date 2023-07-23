@@ -5,6 +5,7 @@
       git:
         repo: git@github.com:Aly-Ghazal/JavaDownloaderScripit.git
         clone: yes
+        dest: ~
 
     - name: run script
       script: ~/JavaDownloaderScripit/java_downloader.sh

@@ -3,10 +3,15 @@
   tasks:
     - name: clone the script
       git:
-        repo: git@github.com:Aly-Ghazal/JavaDownloaderScripit.git
+        repo: https://github.com/Aly-Ghazal/JavaDownloaderScripit.git
         clone: yes
-        dest: ~
+        dest: ./JavaDownloader
+
+    - name: change permission for the script
+      file:
+        path: ~/JavaDownloader/java_downloader.sh
+        mode: '0770'
 
     - name: run script
-      script: ~/JavaDownloaderScripit/java_downloader.sh
+      shell: ~/JavaDownloader/java_downloader.sh
 

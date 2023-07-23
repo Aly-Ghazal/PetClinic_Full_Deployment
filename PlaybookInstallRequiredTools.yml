@@ -1,5 +1,5 @@
 - name: Download and Setup required tools for PetClinic App
-  hosts: pet_clinic
+  hosts: part2
   tasks:
     - name: Download Tomcat 10
       get_url:
@@ -21,4 +21,4 @@
         dest: /home/pet-clinic
     
     - name: startup jenkins
-      command: java -jar jenkins.war
+      command: java -jar jenkins.war --httpPort=9000

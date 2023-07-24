@@ -18,6 +18,9 @@
         dest: /home/pet-clinic
         remote_src: yes
 
+    - name: configure tomcat to have access to its deployment manager
+      command: sed -i 's+</tomcat-users>+  <role rolename="manager-gui"/>\n  <user username="tomcat" password="password" roles="manager-gui"/>\n</tomcat-users>+' /home/pet-clinic/apache-tomcat-10.1.11/conf/tomcat-users.xml
+    
     - name: tomcat listen on port 9090
       command: sed -i 's/<Connector port="8080"/<Connector port="9090"/' /home/pet-clinic/apache-tomcat-10.1.11/conf/server.xml
 

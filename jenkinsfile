@@ -1,0 +1,49 @@
+node {
+    def mvnHome
+    stage('Preparation') { // for display purposes
+        // Get some code from a GitHub repository
+        sh '''
+        rm -r *
+        mkdir spring-petclinic
+        cd spring-petclinic
+        '''
+        git url:'https://github.com/spring-projects/spring-petclinic.git', branch:'main'
+        sh '''
+        mv `ls | grep -v -e spring-petclinic -e Deploy-petclinic.sh` ./spring-petclinic
+        pwd
+        '''
+
+    }
+    stage('Build') {
+        sh """   
+        #!/bin/bash
+        sed -i 's/public class PetClinicApplication {/public class PetClinicApplication extends SpringBootServletInitializer {/' ./spring-petclinic/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java
+        sed -i 's/import org.springframework.context.annotation.ImportRuntimeHints;/import org.springframework.context.annotation.ImportRuntimeHints;\\nimport org.springframework.boot.web.servlet.support.SpringBootServletInitializer;/' ./spring-petclinic/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java
+        sed -i 's+  </parent>+  </parent>\\n  <packaging>war</packaging>+' ./spring-petclinic/pom.xml
+        sed -i 's+    <dependency>\\n      <groupId>org.springframework.boot</groupId>\\n      <artifactId>spring-boot-starter-test</artifactId>\\n      <scope>test</scope>\\n    </dependency>+    <dependency>\\n      <groupId>org.springframework.boot</groupId>\\n      <artifactId>spring-boot-starter-test</artifactId>\\n      <scope>test</scope>\\n    </dependency>\\n    <dependency>\\n      <groupId>org.springframework.boot</groupId>\\n      <artifactId>spring-boot-starter-tomcat</artifactId>\\n      <scope>provided</scope>\\n    </dependency>+' ./spring-petclinic/pom.xml
+        sed -i 's+    <java.version>17</java.version>+    <java.version>18</java.version>+' ./spring-petclinic/pom.xml
+        sed -i 's+  <build>+  <build>\\n    <finalName>\${project.artifactId}</finalName>+' ./spring-petclinic/pom.xml
+        """
+        dir('./spring-petclinic'){
+        sh '''
+        ./mvnw spring-javaformat:apply
+
+        ./mvnw clean package
+
+        '''
+        }
+    }
+    stage('transfer war file') {
+        sh '''
+        cp ./spring-petclinic/target/spring-petclinic.war ~/apache-tomcat-10.1.11/webapps/
+        '''
+    }
+    try {
+        //on success
+        echo "build successful! code has been built and deployed"
+    }
+    catch (Exception e) {
+        echo "BUILD FAILED!!! check your code" 
+        
+    }
+}

@@ -1,6 +1,12 @@
-- name: Download and Setup required tools for PetClinic App
+- 
+  name: Download and Setup required tools for PetClinic App
   hosts: part2
+    #become_user: pet-clinic
+    #become_method: su
+    #become: true
+  become_flags: '--login'
   tasks:
+
     - name: Download Tomcat 10
       get_url:
         url: https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.11/bin/apache-tomcat-10.1.11.tar.gz
@@ -11,14 +17,14 @@
         src: /home/pet-clinic/apache-tomcat-10.1.11.tar.gz
         dest: /home/pet-clinic
         remote_src: yes
-    
-    - name: start tomcat server
-      script: /home/pet-clinic/apache-tomcat-10.1.11/bin/startup.sh
 
+    - name: start tomcat server
+      command: /home/pet-clinic/apache-tomcat-10.1.11/bin/startup.sh
+        
     - name: download jenkins
       get_url:
         url: https://get.jenkins.io/war-stable/2.401.2/jenkins.war
         dest: /home/pet-clinic
     
     - name: startup jenkins
-      command: java -jar jenkins.war --httpPort=9000
+      command: java -jar /home/pet-clinic/jenkins.war --httpPort=9000 --enable-future-java

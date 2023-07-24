@@ -1,4 +1,3 @@
-git clone https://github.com/spring-projects/spring-petclinic.git
 cd ~/spring-petclinic
 
 sed -i 's/public class PetClinicApplication {/public class PetClinicApplication extends SpringBootServletInitializer {/' ~/spring-petclinic/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java

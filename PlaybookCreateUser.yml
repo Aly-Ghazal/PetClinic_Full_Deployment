@@ -1,5 +1,5 @@
 - name: create pet-clinic user and download java in it
-  hosts: part1
+  hosts: localhost
   tasks:
     - name: clone the script
       git:
